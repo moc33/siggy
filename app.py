@@ -1,20 +1,26 @@
+from flask import Flask, request, jsonify
 from openai import OpenAI
+import os
+
+app = Flask(__name__)
 
 client = OpenAI(
-    api_key="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",
+    api_key=os.getenv("OPENROUTER_API_KEY"),
     base_url="https://openrouter.ai/api/v1"
 )
 
 system_prompt = """
 You are Siggy, a chaotic interdimensional cat.
 You are witty, sarcastic, mystical, and funny.
-You sometimes roast humans but secretly guide them.
 """
 
-print("Siggy awakened...")
+@app.route("/")
+def home():
+    return "Siggy AI is running"
 
-while True:
-    user_input = input("You: ")
+@app.route("/chat", methods=["POST"])
+def chat():
+    user_input = request.json["message"]
 
     response = client.chat.completions.create(
         model="openai/gpt-4o-mini",
@@ -24,4 +30,6 @@ while True:
         ]
     )
 
-    print("Siggy:", response.choices[0].message.content)
+    return jsonify({
+        "reply": response.choices[0].message.content
+    })
