@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Siggy AI</title>
+<style>
+body{
+font-family:Arial;
+background:#111;
+color:white;
+text-align:center;
+}
+
+#chat{
+width:60%;
+margin:auto;
+margin-top:40px;
+}
+
+input{
+width:70%;
+padding:10px;
+}
+
+button{
+padding:10px;
+}
+
+.msg{
+margin:10px;
+}
+</style>
+</head>
+
+<body>
+
+<h1>🐱 Siggy AI</h1>
+
+<div id="chat"></div>
+
+<input id="message" placeholder="Talk to Siggy...">
+<button onclick="send()">Send</button>
+
+<script>
+
+async function send(){
+
+let msg=document.getElementById("message").value;
+
+let res=await fetch("/chat",{
+method:"POST",
+headers:{
+"Content-Type":"application/json"
+},
+body:JSON.stringify({message:msg})
+});
+
+let data=await res.json();
+
+document.getElementById("chat").innerHTML+=
+"<div class='msg'><b>You:</b> "+msg+"</div>";
+
+document.getElementById("chat").innerHTML+=
+"<div class='msg'><b>Siggy:</b> "+data.reply+"</div>";
+
+document.getElementById("message").value="";
+
+}
+
+</script>
+
+</body>
+</html>
