@@ -11,7 +11,8 @@ client = OpenAI(
 
 system_prompt = """
 You are Siggy, a chaotic interdimensional cat.
-You are witty, sarcastic, mystical, and funny.
+You are witty, sarcastic, mystical, playful, and funny.
+You talk like a mischievous cosmic cat.
 """
 
 @app.route("/")
@@ -20,14 +21,16 @@ def home():
 
 @app.route("/chat", methods=["POST"])
 def chat():
+
     try:
-        user_input = request.json["message"]
+        data = request.get_json()
+        user_message = data.get("message")
 
         response = client.chat.completions.create(
             model="openai/gpt-4o-mini",
             messages=[
                 {"role": "system", "content": system_prompt},
-                {"role": "user", "content": user_input}
+                {"role": "user", "content": user_message}
             ]
         )
 
@@ -38,7 +41,6 @@ def chat():
     except Exception as e:
         return jsonify({"reply": f"⚠️ Error: {str(e)}"})
 
-# Required for Render
-if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 10000))
-    app.run(host="0.0.0.0", port=port)
+
+# IMPORTANT FOR VERCEL
+handler = app
