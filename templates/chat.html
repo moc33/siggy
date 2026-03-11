@@ -1,79 +1,84 @@
 <!DOCTYPE html>
 <html>
+
 <head>
+
 <title>Siggy AI</title>
 
 <style>
 
 body{
-background:#111;
+background:#0f0f0f;
 color:white;
 font-family:Arial;
 display:flex;
 flex-direction:column;
 align-items:center;
+height:100vh;
+margin:0;
 }
 
 h1{
 margin-top:30px;
 }
 
-#chat{
+#chatbox{
 width:600px;
+height:400px;
+overflow-y:auto;
+border:1px solid #333;
+padding:15px;
 margin-top:20px;
+border-radius:10px;
+background:#1a1a1a;
 }
 
 .message{
-margin:10px 0;
-padding:10px;
-border-radius:8px;
+margin-bottom:10px;
 }
 
 .user{
-background:#444;
-text-align:right;
+color:#00d9ff;
 }
 
 .bot{
-background:#222;
+color:#ffcc00;
 }
 
 #inputArea{
-margin-top:20px;
+margin-top:15px;
 display:flex;
+width:600px;
 }
 
 input{
 flex:1;
 padding:10px;
 border:none;
-border-radius:6px;
+border-radius:5px;
 }
 
 button{
-margin-left:10px;
 padding:10px 20px;
-background:#00c3ff;
+margin-left:10px;
+background:#00d9ff;
 border:none;
-border-radius:6px;
+border-radius:5px;
 cursor:pointer;
 }
 
-button:hover{
-background:#0099cc;
-}
-
 </style>
+
 </head>
 
 <body>
 
-<h1>🐱 Siggy AI</h1>
+<h1>🐱 Siggy the Chaos Cat</h1>
 
-<div id="chat"></div>
+<div id="chatbox"></div>
 
 <div id="inputArea">
-<input id="msg" placeholder="Ask Siggy anything..." />
+<input id="message" placeholder="Talk to Siggy..." />
 <button onclick="send()">Send</button>
 </div>
 
@@ -81,30 +86,30 @@ background:#0099cc;
 
 async function send(){
 
-const input = document.getElementById("msg")
-const message = input.value
+let input=document.getElementById("message")
+let chatbox=document.getElementById("chatbox")
 
-if(!message) return
+let msg=input.value
 
-const chat = document.getElementById("chat")
+if(!msg) return
 
-chat.innerHTML += `<div class="message user">${message}</div>`
+chatbox.innerHTML+=`<div class="message user"><b>You:</b> ${msg}</div>`
 
 input.value=""
 
-const res = await fetch("/chat",{
+let res=await fetch("/chat",{
 method:"POST",
 headers:{
 "Content-Type":"application/json"
 },
-body:JSON.stringify({message})
+body:JSON.stringify({message:msg})
 })
 
-const data = await res.json()
+let data=await res.json()
 
-chat.innerHTML += `<div class="message bot">${data.reply}</div>`
+chatbox.innerHTML+=`<div class="message bot"><b>Siggy:</b> ${data.reply}</div>`
 
-chat.scrollTop = chat.scrollHeight
+chatbox.scrollTop=chatbox.scrollHeight
 
 }
 
